@@ -33,6 +33,9 @@ jobs:
     name: SAST
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      SNYK_ORG: ${{ secrets.SNYK_ORG }}
     steps:
       # Checkout the repo so Snyk can scan the source.
       - name: Checkout source
@@ -44,50 +47,81 @@ jobs:
         with:
           dotnet-version: "8.x"
 
+      # Prepare report paths and a timestamped artifact suffix.
+      - name: Prepare reports
+        run: |
+          mkdir -p reports
+          echo "REPORT_TS=$(date -u +%Y%m%d-%H%M%S)" >> "$GITHUB_ENV"
+
       # Install Snyk CLI and authenticate using the repo secret.
       - name: Snyk auth
         uses: snyk/actions/setup@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       # Run Snyk Code SAST (targets C# MVC paths like SQLi/XSS).
       - name: Run Snyk Code (SAST)
-        id: snyk
+        id: snyk_code
         continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: >
-          snyk code test "${{ inputs.scan-path }}"
-          --sarif-file-output=snyk.sarif
-          --severity-threshold=${{ inputs.severity-threshold || 'high' }}
-          --exclude="${{ inputs.exclude }}"
+        run: |
+          ORG_ARG=""
+          if [ -n "$SNYK_ORG" ]; then
+            ORG_ARG="--org=$SNYK_ORG"
+          fi
+          snyk code test "${{ inputs.scan-path }}" \
+            --sarif-file-output=reports/snyk-code.sarif \
+            --severity-threshold=${{ inputs.severity-threshold || 'high' }} \
+            --exclude="${{ inputs.exclude }}" \
+            --json $ORG_ARG > reports/snyk-code.json
+
+      # Run Snyk Open Source (SCA) to scan dependencies.
+      - name: Run Snyk Open Source (SCA)
+        id: snyk_oss
+        continue-on-error: true
+        run: |
+          ORG_ARG=""
+          if [ -n "$SNYK_ORG" ]; then
+            ORG_ARG="--org=$SNYK_ORG"
+          fi
+          snyk test \
+            --all-projects \
+            --sarif-file-output=reports/snyk-oss.sarif \
+            --severity-threshold=${{ inputs.severity-threshold || 'high' }} \
+            --json $ORG_ARG > reports/snyk-oss.json
 
       # Upload findings to GitHub code scanning.
-      - name: Upload SARIF to GitHub
+      - name: Upload SAST SARIF to GitHub
         if: always()
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: snyk.sarif
+          sarif_file: reports/snyk-code.sarif
+          category: snyk-code-sast
 
-      # Notify Teams if the SAST step failed at/above the threshold.
-      - name: Notify Teams on failure
-        if: steps.snyk.outcome == 'failure' && env.TEAMS_WEBHOOK != ''
-        env:
-          TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
-        run: |
-          payload=$(cat <<EOF
-          {"text":"SAST failed: ${{ job.status }} High vulns in ${{ github.repository }} - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}
-          EOF
-          )
-          curl -sS -X POST -H "Content-Type: application/json" -d "$payload" "$TEAMS_WEBHOOK"
+      # Upload SCA findings to GitHub code scanning.
+      - name: Upload SCA SARIF to GitHub
+        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: reports/snyk-oss.sarif
+          category: snyk-oss-sca
 
-      # Always retain the SARIF report as an artifact.
-      - name: Upload SARIF artifact
+      # Always retain the reports as artifacts.
+      - name: Upload SAST artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: snyk-sast-report
-          path: snyk.sarif
+          name: snyk-sast-${{ env.REPORT_TS }}
+          path: |
+            reports/snyk-code.sarif
+            reports/snyk-code.json
+          if-no-files-found: warn
+
+      - name: Upload SCA artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-sca-${{ env.REPORT_TS }}
+          path: |
+            reports/snyk-oss.sarif
+            reports/snyk-oss.json
           if-no-files-found: warn
 
       # Write a brief summary for quick visibility in the run output.
@@ -95,16 +129,18 @@ jobs:
         if: always()
         run: |
           {
-            echo "### SAST (Snyk Code)"
+            echo "### SAST + SCA (Snyk)"
             echo "- Threshold: ${{ inputs.severity-threshold || 'high' }}"
             echo "- Scan path: ${{ inputs.scan-path }}"
             echo "- Exclude: ${{ inputs.exclude }}"
-            echo "- SARIF: snyk.sarif"
+            echo "- SAST SARIF: reports/snyk-code.sarif"
+            echo "- SCA SARIF: reports/snyk-oss.sarif"
+            echo "- Artifacts: snyk-sast-${{ env.REPORT_TS }}, snyk-sca-${{ env.REPORT_TS }}"
           } >> "$GITHUB_STEP_SUMMARY"
 
       # Fail the job if Snyk found issues at/above the threshold.
       - name: Enforce failure on findings
-        if: steps.snyk.outcome == 'failure'
+        if: steps.snyk_code.outcome == 'failure' || steps.snyk_oss.outcome == 'failure'
         run: |
-          echo "Snyk Code found issues at or above the threshold."
+          echo "Snyk found issues at or above the threshold."
           exit 1
