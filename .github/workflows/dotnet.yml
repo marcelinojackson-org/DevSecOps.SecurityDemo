@@ -2,10 +2,11 @@
 name: .NET Build, Smoke Test & Docker Publish
 
 on:
-  push:
-    branches: [ "main" ]
-    tags: [ "v*.*.*", "*.*.*" ]   # push on semver tags too (v1.2.3 or 1.2.3)
-  pull_request:
+  # push:
+  #   branches: [ "main" ]
+  #   tags: [ "v*.*.*", "*.*.*" ]   # push on semver tags too (v1.2.3 or 1.2.3)
+  # pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
