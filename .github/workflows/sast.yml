@@ -1,0 +1,107 @@
+name: SAST (Snyk Code)
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      severity-threshold:
+        description: "Minimum severity to fail the build"
+        required: true
+        default: "high"
+        type: choice
+        options:
+          - low
+          - medium
+          - high
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+
+jobs:
+  sast:
+    name: SAST
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repo so Snyk can scan the source.
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      # Ensure the .NET 8 SDK is available for AspGoat restore/build context.
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.x"
+
+      # Restore packages so the analyzer sees the full dependency graph.
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Install Snyk CLI and authenticate using the repo secret.
+      - name: Snyk auth
+        uses: snyk/actions/setup@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      # Run Snyk Code SAST (targets C# MVC paths like SQLi/XSS).
+      - name: Run Snyk Code (SAST)
+        id: snyk
+        uses: snyk/actions/dotnet@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: >
+            code test
+            --sarif-file-output=snyk.sarif
+            --severity-threshold=${{ inputs.severity-threshold || 'high' }}
+
+      # Upload findings to GitHub code scanning.
+      - name: Upload SARIF to GitHub
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk.sarif
+
+      # Notify Teams if the SAST step failed at/above the threshold.
+      - name: Notify Teams on failure
+        if: steps.snyk.outcome == 'failure' && secrets.TEAMS_WEBHOOK != ''
+        uses: microsoft/teams-action@v0.4
+        with:
+          webhook: ${{ secrets.TEAMS_WEBHOOK }}
+          message: >-
+            SAST failed: ${{ job.status }} High vulns in ${{ github.repository }} -
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      # Always retain the SARIF report as an artifact.
+      - name: Upload SARIF artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-sast-report
+          path: snyk.sarif
+          if-no-files-found: warn
+
+      # Write a brief summary for quick visibility in the run output.
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "### SAST (Snyk Code)"
+            echo "- Threshold: ${{ inputs.severity-threshold || 'high' }}"
+            echo "- SARIF: snyk.sarif"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Fail the job if Snyk found issues at/above the threshold.
+      - name: Enforce failure on findings
+        if: steps.snyk.outcome == 'failure'
+        run: |
+          echo "Snyk Code found issues at or above the threshold."
+          exit 1
