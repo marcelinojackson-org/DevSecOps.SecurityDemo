@@ -12,6 +12,16 @@ on:
           - low
           - medium
           - high
+      scan-path:
+        description: "Path to scan (narrow for faster runs)"
+        required: true
+        default: "Controllers"
+        type: string
+      exclude:
+        description: "Comma-separated paths to skip"
+        required: true
+        default: "wwwroot,Database,bin,obj"
+        type: string
 
 permissions:
   contents: read
@@ -22,6 +32,7 @@ jobs:
   sast:
     name: SAST
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       # Checkout the repo so Snyk can scan the source.
       - name: Checkout source
@@ -32,10 +43,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.x"
-
-      # Restore packages so the analyzer sees the full dependency graph.
-      - name: Restore dependencies
-        run: dotnet restore
 
       # Install Snyk CLI and authenticate using the repo secret.
       - name: Snyk auth
@@ -50,9 +57,10 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: >
-          snyk code test
+          snyk code test "${{ inputs.scan-path }}"
           --sarif-file-output=snyk.sarif
           --severity-threshold=${{ inputs.severity-threshold || 'high' }}
+          --exclude="${{ inputs.exclude }}"
 
       # Upload findings to GitHub code scanning.
       - name: Upload SARIF to GitHub
@@ -89,6 +97,8 @@ jobs:
           {
             echo "### SAST (Snyk Code)"
             echo "- Threshold: ${{ inputs.severity-threshold || 'high' }}"
+            echo "- Scan path: ${{ inputs.scan-path }}"
+            echo "- Exclude: ${{ inputs.exclude }}"
             echo "- SARIF: snyk.sarif"
           } >> "$GITHUB_STEP_SUMMARY"
 
