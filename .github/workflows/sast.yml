@@ -46,15 +46,13 @@ jobs:
       # Run Snyk Code SAST (targets C# MVC paths like SQLi/XSS).
       - name: Run Snyk Code (SAST)
         id: snyk
-        uses: snyk/actions/dotnet@master
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: >
-            code test
-            --sarif-file-output=snyk.sarif
-            --severity-threshold=${{ inputs.severity-threshold || 'high' }}
+        run: >
+          snyk code test
+          --sarif-file-output=snyk.sarif
+          --severity-threshold=${{ inputs.severity-threshold || 'high' }}
 
       # Upload findings to GitHub code scanning.
       - name: Upload SARIF to GitHub
