@@ -25,7 +25,8 @@ automatically; each demo is interactive and must be started by you.
 
 - The vulnerable ASP.NET Core app (AspGoat base).
 - GitHub Actions workflows for security testing.
-- SAST (Snyk Code) as the first pipeline in the series.
+- SAST + SCA (Snyk Code + Snyk Open Source) as the first pipeline in the series.
+- Detailed runbook: [docs/sast.md](docs/sast.md).
 
 ## SAST (Snyk Code) workflow
 
