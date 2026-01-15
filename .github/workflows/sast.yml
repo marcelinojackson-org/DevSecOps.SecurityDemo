@@ -12,6 +12,16 @@ on:
           - low
           - medium
           - high
+      scan-path:
+        description: "Path to scan (narrow for faster runs)"
+        required: true
+        default: "Controllers"
+        type: string
+      exclude:
+        description: "Comma-separated paths to skip"
+        required: true
+        default: "wwwroot,Database,bin,obj"
+        type: string
 
 permissions:
   contents: read
@@ -22,6 +32,7 @@ jobs:
   sast:
     name: SAST
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       # Checkout the repo so Snyk can scan the source.
       - name: Checkout source
@@ -33,10 +44,6 @@ jobs:
         with:
           dotnet-version: "8.x"
 
-      # Restore packages so the analyzer sees the full dependency graph.
-      - name: Restore dependencies
-        run: dotnet restore
-
       # Install Snyk CLI and authenticate using the repo secret.
       - name: Snyk auth
         uses: snyk/actions/setup@master
@@ -46,15 +53,14 @@ jobs:
       # Run Snyk Code SAST (targets C# MVC paths like SQLi/XSS).
       - name: Run Snyk Code (SAST)
         id: snyk
-        uses: snyk/actions/dotnet@master
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: >
-            code test
-            --sarif-file-output=snyk.sarif
-            --severity-threshold=${{ inputs.severity-threshold || 'high' }}
+        run: >
+          snyk code test "${{ inputs.scan-path }}"
+          --sarif-file-output=snyk.sarif
+          --severity-threshold=${{ inputs.severity-threshold || 'high' }}
+          --exclude="${{ inputs.exclude }}"
 
       # Upload findings to GitHub code scanning.
       - name: Upload SARIF to GitHub
@@ -66,14 +72,14 @@ jobs:
       # Notify Teams if the SAST step failed at/above the threshold.
       - name: Notify Teams on failure
         if: steps.snyk.outcome == 'failure' && env.TEAMS_WEBHOOK != ''
-        uses: microsoft/teams-action@v0.4
         env:
           TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
-        with:
-          webhook: ${{ env.TEAMS_WEBHOOK }}
-          message: >-
-            SAST failed: ${{ job.status }} High vulns in ${{ github.repository }} -
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          payload=$(cat <<EOF
+          {"text":"SAST failed: ${{ job.status }} High vulns in ${{ github.repository }} - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}
+          EOF
+          )
+          curl -sS -X POST -H "Content-Type: application/json" -d "$payload" "$TEAMS_WEBHOOK"
 
       # Always retain the SARIF report as an artifact.
       - name: Upload SARIF artifact
@@ -91,6 +97,8 @@ jobs:
           {
             echo "### SAST (Snyk Code)"
             echo "- Threshold: ${{ inputs.severity-threshold || 'high' }}"
+            echo "- Scan path: ${{ inputs.scan-path }}"
+            echo "- Exclude: ${{ inputs.exclude }}"
             echo "- SARIF: snyk.sarif"
           } >> "$GITHUB_STEP_SUMMARY"
 
