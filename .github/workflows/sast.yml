@@ -66,14 +66,14 @@ jobs:
       # Notify Teams if the SAST step failed at/above the threshold.
       - name: Notify Teams on failure
         if: steps.snyk.outcome == 'failure' && env.TEAMS_WEBHOOK != ''
-        uses: microsoft/teams-action@v0.4
         env:
           TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
-        with:
-          webhook: ${{ env.TEAMS_WEBHOOK }}
-          message: >-
-            SAST failed: ${{ job.status }} High vulns in ${{ github.repository }} -
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          payload=$(cat <<EOF
+          {"text":"SAST failed: ${{ job.status }} High vulns in ${{ github.repository }} - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}
+          EOF
+          )
+          curl -sS -X POST -H "Content-Type: application/json" -d "$payload" "$TEAMS_WEBHOOK"
 
       # Always retain the SARIF report as an artifact.
       - name: Upload SARIF artifact
