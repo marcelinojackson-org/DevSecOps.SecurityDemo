@@ -1,0 +1,6 @@
+# ZAP rules file (tab-separated)
+# Format: <rule-id> <action> <comment>
+# Actions: IGNORE, INFO, WARN, FAIL
+#
+# Example:
+# 10095	IGNORE	Ignore "Cookie No HttpOnly Flag" for demo

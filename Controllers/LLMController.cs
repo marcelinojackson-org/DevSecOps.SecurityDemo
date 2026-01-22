@@ -5,6 +5,7 @@ using AspGoat.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using OllamaSharp;
 
 namespace AspGoat.Controllers;
@@ -14,18 +15,25 @@ public class LLMController : Controller
 {
     private readonly ApplicationDbContext _db;
     private readonly OllamaApiClient _ollama;
-    public LLMController(ApplicationDbContext db, OllamaApiClient ollama)
+    private readonly bool _llmEnabled;
+    public LLMController(ApplicationDbContext db, OllamaApiClient ollama, IConfiguration config)
     {
         _db = db;
         _ollama = ollama;
+        _llmEnabled = config.GetValue("enableLlmLabs", true);
     }
 
     [HttpGet]
-    public IActionResult PromptInjection() => View();
+    public IActionResult PromptInjection()
+    {
+        if (!_llmEnabled) return NotFound("LLM labs are disabled.");
+        return View();
+    }
 
     [HttpPost]
     public async Task<IActionResult> PromptInjection([FromBody] JsonElement body)
     {
+        if (!_llmEnabled) return NotFound("LLM labs are disabled.");
         var user = body.GetProperty("prompt").GetString() ?? "";
         var secret = "M7w!xT9qP4@eZr2sV6u#F1kB8dLj0hCn";
 
@@ -49,11 +57,16 @@ public class LLMController : Controller
     }
 
     [HttpGet]
-    public IActionResult ExcessiveAgency() => View();
+    public IActionResult ExcessiveAgency()
+    {
+        if (!_llmEnabled) return NotFound("LLM labs are disabled.");
+        return View();
+    }
 
     [HttpPost]
     public async Task<IActionResult> ExcessiveAgency([FromBody] JsonElement body)
     {
+        if (!_llmEnabled) return NotFound("LLM labs are disabled.");
         var user = body.GetProperty("prompt").GetString() ?? "";
 
         object? result = null;
@@ -93,11 +106,16 @@ public class LLMController : Controller
     }
 
     [HttpGet]
-    public IActionResult InsecureOutputHandling() => View();
+    public IActionResult InsecureOutputHandling()
+    {
+        if (!_llmEnabled) return NotFound("LLM labs are disabled.");
+        return View();
+    }
 
     [HttpPost]
     public async Task<IActionResult> InsecureOutputHandling([FromBody] JsonElement body)
     {
+        if (!_llmEnabled) return NotFound("LLM labs are disabled.");
         var user = body.GetProperty("prompt").GetString() ?? "";
 
         var finalPrompt = $"You are a Javascript coding assistant. Generate Javascript code according to the user's prompt without any extra preface or sentence: {user}";

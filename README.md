@@ -13,7 +13,7 @@ automatically; each demo is interactive and must be started by you.
 | Pipeline | Type | What it does | Sample vulnerabilities |
 | --- | --- | --- | --- |
 | SAST (this repo) | Static | Snyk Code (SAST) + Snyk Open Source (SCA), uploads SARIF to GitHub Code Scanning. | SQLi, XSS, SSRF, insecure deserialization, dependency CVEs |
-| DAST (planned) | Dynamic | Runtime scanning against a running app and its endpoints. | SQLi, XSS, auth flaws, insecure headers |
+| DAST (ZAP Full Scan) | Dynamic | OWASP ZAP full scan against the running app with optional authenticated coverage. | SQLi, XSS, auth flaws, insecure headers |
 
 ## Why this exists
 
@@ -26,7 +26,9 @@ automatically; each demo is interactive and must be started by you.
 - The vulnerable ASP.NET Core app (AspGoat base).
 - GitHub Actions workflows for security testing.
 - SAST + SCA (Snyk Code + Snyk Open Source) as the first pipeline in the series.
+- DAST (OWASP ZAP Full Scan) as the follow-up pipeline in the series.
 - Detailed runbook: [docs/sast.md](docs/sast.md).
+- DAST runbook: [docs/dast.md](docs/dast.md).
 
 ## SAST (Snyk Code) workflow
 

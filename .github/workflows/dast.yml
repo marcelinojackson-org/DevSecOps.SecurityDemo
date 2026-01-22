@@ -1,0 +1,165 @@
+name: DAST (ZAP Full Scan)
+
+on:
+  workflow_dispatch:
+    inputs:
+      fail-threshold:
+        description: "Severity threshold for the summary (ZAP has no Critical)"
+        required: true
+        default: "high"
+        type: choice
+        options:
+          - high
+          - critical
+      include-llm:
+        description: "Include AI/LLM routes (requires Ollama at http://localhost:11434)"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+      target-url:
+        description: "Target URL"
+        required: true
+        default: "http://localhost:8000"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  dast:
+    name: DAST
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Prepare reports
+        run: |
+          mkdir -p reports
+          echo "REPORT_TS=$(date -u +%Y%m%d-%H%M%S)" >> "$GITHUB_ENV"
+
+      - name: Decide LLM coverage
+        id: llm
+        run: |
+          enabled="false"
+          reason="disabled_by_input"
+
+          if [ "${{ inputs.include-llm }}" = "true" ]; then
+            if curl -fsS http://localhost:11434/api/tags >/dev/null 2>&1; then
+              enabled="true"
+              reason="ollama_available"
+            else
+              enabled="false"
+              reason="ollama_unavailable"
+            fi
+          fi
+
+          echo "enabled=$enabled" >> "$GITHUB_OUTPUT"
+          echo "reason=$reason" >> "$GITHUB_OUTPUT"
+
+      - name: Build app image
+        run: docker build -t aspgoat-dast .
+
+      - name: Run app container
+        run: |
+          docker run -d --name aspgoat \
+            -p 8000:8000 \
+            -e enableLlmLabs=${{ steps.llm.outputs.enabled }} \
+            aspgoat-dast
+
+      - name: Wait for login page
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://localhost:8000/Account/Login >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs aspgoat || true
+          exit 1
+
+      - name: Capture auth cookie
+        id: auth
+        run: |
+          headers=$(curl -s -D - -o /dev/null -X POST \
+            -d "username=admin&password=admin123" \
+            http://localhost:8000/Account/Login)
+          cookies=$(echo "$headers" | awk -F': ' '/^Set-Cookie: /{print $2}' | cut -d';' -f1 | paste -sd '; ' -)
+
+          if [ -z "$cookies" ]; then
+            echo "Auth cookie not captured."
+            exit 1
+          fi
+
+          echo "cookie=$cookies" >> "$GITHUB_OUTPUT"
+
+      - name: Run ZAP full scan
+        id: zap
+        continue-on-error: true
+        uses: zaproxy/action-full-scan@v0.13.0
+        env:
+          ZAP_AUTH_HEADER: Cookie
+          ZAP_AUTH_HEADER_VALUE: ${{ steps.auth.outputs.cookie }}
+          ZAP_AUTH_HEADER_SITE: ${{ inputs.target-url }}
+        with:
+          target: ${{ inputs.target-url }}
+          docker_name: "ghcr.io/zaproxy/zaproxy:stable"
+          rules_file_name: ".zap/rules.tsv"
+          cmd_options: "-j -J reports/zap-report.json -r reports/zap-report.html"
+          fail_action: false
+
+      - name: Upload DAST artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-dast-${{ env.REPORT_TS }}
+          path: |
+            reports/zap-report.html
+            reports/zap-report.json
+          if-no-files-found: warn
+
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "### DAST (ZAP Full Scan)"
+            echo "- Target: ${{ inputs.target-url }}"
+            echo "- LLM requested: ${{ inputs.include-llm }}"
+            echo "- LLM enabled: ${{ steps.llm.outputs.enabled }} (${{ steps.llm.outputs.reason }})"
+            echo "- Threshold: ${{ inputs.fail-threshold }}"
+            echo "- Non-blocking: true"
+            echo "- ZAP status: ${{ steps.zap.outcome }}"
+            echo "- Reports: reports/zap-report.html, reports/zap-report.json"
+            echo "- Artifacts: zap-dast-${{ env.REPORT_TS }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -f reports/zap-report.json ]; then
+            high=$(jq '[.site[]?.alerts[]? | select(.riskcode == "3" or .riskcode == 3)] | length' reports/zap-report.json)
+            medium=$(jq '[.site[]?.alerts[]? | select(.riskcode == "2" or .riskcode == 2)] | length' reports/zap-report.json)
+            low=$(jq '[.site[]?.alerts[]? | select(.riskcode == "1" or .riskcode == 1)] | length' reports/zap-report.json)
+            info=$(jq '[.site[]?.alerts[]? | select(.riskcode == "0" or .riskcode == 0)] | length' reports/zap-report.json)
+
+            {
+              echo "- Alerts: high=$high, medium=$medium, low=$low, info=$info"
+              if [ "${{ inputs.fail-threshold }}" = "critical" ]; then
+                echo "- Threshold applied: critical (mapped to high)"
+              else
+                echo "- Threshold applied: high"
+              fi
+            } >> "$GITHUB_STEP_SUMMARY"
+
+            threshold_count=$high
+            if [ "$threshold_count" -gt 0 ]; then
+              echo "::warning::DAST found $threshold_count alerts at or above the threshold."
+            fi
+          else
+            echo "- Alerts: report not found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Cleanup containers
+        if: always()
+        run: docker rm -f aspgoat || true
