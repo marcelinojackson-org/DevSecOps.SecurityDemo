@@ -1,6 +1,7 @@
 ﻿@{
     Layout = null;
 }
+@inject Microsoft.Extensions.Configuration.IConfiguration Config
 
 <!DOCTYPE html>
 <html lang="en">
@@ -94,7 +95,10 @@
         <a asp-controller="Home" asp-action="SSRF">🐞 Server Side Request Forgery (SSRF)</a>
         <a asp-controller="Home" asp-action="CachePoisoning">🐞 Cache Poisoning</a>
         <a asp-controller="Home" asp-action="SSTI">🐞 Server Side Template Injection (RCE)</a>
-        <a asp-controller="Home" asp-action="LLM_Vulnerabilities">🐞 AI / LLM Vulnerabilities</a>
+        @if (Config.GetValue("enableLlmLabs", true))
+        {
+            <a asp-controller="Home" asp-action="LLM_Vulnerabilities">🐞 AI / LLM Vulnerabilities</a>
+        }
     </div>
 
     <div class="topbar">

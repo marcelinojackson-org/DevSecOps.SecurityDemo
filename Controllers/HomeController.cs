@@ -433,6 +433,8 @@ public class HomeController : Controller
 
     public IActionResult LLM_Vulnerabilities()
     {
+        if (!_config.GetValue("enableLlmLabs", true))
+            return NotFound("LLM labs are disabled.");
         return View("LLM_Vuln");
     }
 
