@@ -1,4 +1,4 @@
-name: SCAScan
+name: SCAScan (Trivy SBOM)
 
 on:
   workflow_dispatch:
@@ -53,7 +53,8 @@ jobs:
           image-ref: ${{ inputs.image-tag }}
           format: cyclonedx
           output: reports/trivy-sbom.json
-          ignorefile: .trivyignore
+          trivyignores: .trivyignore
+          scanners: vuln
 
       - name: Scan for HIGH/CRITICAL vulnerabilities
         uses: aquasecurity/trivy-action@0.24.0
@@ -63,7 +64,7 @@ jobs:
           format: table
           output: reports/trivy-critical.txt
           severity: ${{ env.TRIVY_SEVERITY }}
-          ignorefile: .trivyignore
+          trivyignores: .trivyignore
           exit-code: "1"
 
       - name: Upload SCA artifacts
