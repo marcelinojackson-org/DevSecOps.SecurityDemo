@@ -84,6 +84,33 @@ Notes:
 - Alert tuning lives in `.zap/rules.tsv` and uses ZAP alert IDs:
   https://www.zaproxy.org/docs/alerts/
 
+DAST report samples (click to open):
+- [zap-report.html](docs/dast-reports/20260123-012049/zap-report.html)
+- [zap-report.json](docs/dast-reports/20260123-012049/zap-report.json)
+
+### DAST screenshots
+
+**Workflow inputs**
+
+![DAST workflow inputs](screenshots/dast-workflow-params.png)
+
+**Artifacts and reports**
+
+![DAST artifacts and reports](screenshots/dast-report-artifacts.png)
+
+## DAST configuration files
+
+These files live under `.zap/` and are referenced by the DAST workflow:
+
+- `.zap/hooks/spider.py`  
+  Hook loaded by ZAP to set spider/AJAX spider depth (defaults to 2). The depth
+  is driven by the `spider-depth` workflow input.
+
+- `.zap/rules.tsv`  
+  TSV file for alert actions (IGNORE/WARN/FAIL). Each line uses a ZAP alert ID
+  from https://www.zaproxy.org/docs/alerts/. This is the primary place to tune
+  DAST noise and demo expectations.
+
 ## Repo details
 
 This project is copied from AspGoat so we can evolve the demo without waiting
