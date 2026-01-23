@@ -14,6 +14,7 @@ automatically; each demo is interactive and must be started by you.
 | --- | --- | --- | --- |
 | SAST (this repo) | Static | Snyk Code (SAST) + Snyk Open Source (SCA), uploads SARIF to GitHub Code Scanning. | SQLi, XSS, SSRF, insecure deserialization, dependency CVEs |
 | DAST (ZAP Full Scan) | Dynamic | OWASP ZAP full scan against the running app with optional authenticated coverage. | SQLi, XSS, auth flaws, insecure headers |
+| SCAScan (Trivy SBOM) | Static | Trivy image scan producing SBOM (CycloneDX JSON) and high/critical CVE summary. | Dependency CVEs in container image |
 
 ## Why this exists
 
@@ -27,8 +28,10 @@ automatically; each demo is interactive and must be started by you.
 - GitHub Actions workflows for security testing.
 - SAST + SCA (Snyk Code + Snyk Open Source) as the first pipeline in the series.
 - DAST (OWASP ZAP Full Scan) as the follow-up pipeline in the series.
+- SCAScan (Trivy SBOM) for container image dependency coverage.
 - Detailed runbook: [docs/sast.md](docs/sast.md).
 - DAST runbook: [docs/dast.md](docs/dast.md).
+- SCA runbook: [docs/sca-scan.md](docs/sca-scan.md).
 - DAST tuning: `.zap/rules.tsv` uses ZAP alert IDs (reference: https://www.zaproxy.org/docs/alerts/).
 
 ## SAST (Snyk Code) workflow
@@ -110,6 +113,24 @@ These files live under `.zap/` and are referenced by the DAST workflow:
   TSV file for alert actions (IGNORE/WARN/FAIL). Each line uses a ZAP alert ID
   from https://www.zaproxy.org/docs/alerts/. This is the primary place to tune
   DAST noise and demo expectations.
+
+## SCAScan (Trivy SBOM) workflow
+
+The SCA workflow is **manual-only** and scans the built Docker image with Trivy.
+It generates a CycloneDX SBOM and a HIGH/CRITICAL summary, then fails the job
+if the threshold is met.
+
+How to run:
+1. Go to **Actions** → **SCAScan** → **Run workflow**.
+2. Choose the inputs:
+   - `severity-threshold` (high/critical)
+   - `image-tag` (default: aspgoat-sca)
+3. Download artifacts after the run:
+   - `trivy-sca-YYYYMMDD-HHMMSS` (SBOM + summary)
+
+Notes:
+- Trivy honors `.trivyignore` when present for demo suppressions.
+- SBOM format is CycloneDX JSON (`reports/trivy-sbom.json`).
 
 ## Repo details
 

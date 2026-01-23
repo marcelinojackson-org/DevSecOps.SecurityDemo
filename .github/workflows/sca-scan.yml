@@ -1,0 +1,89 @@
+name: SCAScan
+
+on:
+  workflow_dispatch:
+    inputs:
+      severity-threshold:
+        description: "Minimum severity to fail the build"
+        required: true
+        default: "high"
+        type: choice
+        options:
+          - high
+          - critical
+      image-tag:
+        description: "Docker image tag"
+        required: true
+        default: "aspgoat-sca"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  sca:
+    name: SCAScan (Trivy SBOM)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Prepare reports
+        run: |
+          mkdir -p reports
+          chmod -R a+rwX reports
+          echo "REPORT_TS=$(date -u +%Y%m%d-%H%M%S)" >> "$GITHUB_ENV"
+
+      - name: Build image
+        run: docker build -t ${{ inputs.image-tag }} .
+
+      - name: Set severity threshold
+        run: |
+          if [ "${{ inputs.severity-threshold }}" = "critical" ]; then
+            echo "TRIVY_SEVERITY=CRITICAL" >> "$GITHUB_ENV"
+          else
+            echo "TRIVY_SEVERITY=HIGH,CRITICAL" >> "$GITHUB_ENV"
+          fi
+
+      - name: Generate SBOM (CycloneDX JSON)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: image
+          image-ref: ${{ inputs.image-tag }}
+          format: cyclonedx
+          output: reports/trivy-sbom.json
+          ignorefile: .trivyignore
+
+      - name: Scan for HIGH/CRITICAL vulnerabilities
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: image
+          image-ref: ${{ inputs.image-tag }}
+          format: table
+          output: reports/trivy-critical.txt
+          severity: ${{ env.TRIVY_SEVERITY }}
+          ignorefile: .trivyignore
+          exit-code: "1"
+
+      - name: Upload SCA artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-sca-${{ env.REPORT_TS }}
+          path: |
+            reports/trivy-sbom.json
+            reports/trivy-critical.txt
+          if-no-files-found: warn
+
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "### SCAScan (Trivy SBOM)"
+            echo "- Image: ${{ inputs.image-tag }}"
+            echo "- Threshold: ${{ inputs.severity-threshold }}"
+            echo "- SBOM: reports/trivy-sbom.json"
+            echo "- Critical summary: reports/trivy-critical.txt"
+            echo "- Artifacts: trivy-sca-${{ env.REPORT_TS }}"
+          } >> "$GITHUB_STEP_SUMMARY"
