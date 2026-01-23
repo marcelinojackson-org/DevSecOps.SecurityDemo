@@ -1,8 +1,9 @@
 # SAST + SCA Runbook (Snyk)
 
 This document covers the detailed workflow for running **Snyk Code (SAST)** and
-**Snyk Open Source (SCA)** in this repo. The workflow is **manual-only** and
-intended for demos.
+**Snyk Open Source (SCA)** in this repo. Snyk Open Source focuses on source
+dependency manifests and transitive packages (not the container image). The
+workflow is **manual-only** and intended for demos.
 
 ## Pipeline overview
 

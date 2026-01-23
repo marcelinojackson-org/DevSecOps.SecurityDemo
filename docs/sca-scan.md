@@ -1,8 +1,9 @@
 # SCAScan Runbook (Trivy SBOM)
 
 This document covers the workflow for running **SCAScan (Trivy SBOM)** against the Docker
-image built from this repo. The workflow is **workflow_dispatch** only and does
-not run automatically.
+image built from this repo. It scans OS packages and bundled runtime dependencies
+that may not be visible in source manifests. The workflow is **workflow_dispatch**
+only and does not run automatically.
 
 ## Pipeline overview
 
