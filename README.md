@@ -12,7 +12,7 @@ automatically; each demo is interactive and must be started by you.
 
 | Pipeline | Type | What it does | Sample vulnerabilities |
 | --- | --- | --- | --- |
-| SAST (Snyk Code) | Static | Snyk Code (SAST) + Snyk Open Source (SCA), uploads SARIF to GitHub Code Scanning. | SQLi, XSS, SSRF, insecure deserialization, dependency CVEs |
+| SAST (Snyk Code) | Static | Code analysis + source dependency SCA (Snyk Open Source), uploads SARIF to GitHub Code Scanning. | SQLi, XSS, SSRF, insecure deserialization, dependency CVEs |
 | DAST (ZAP Full Scan) | Dynamic | OWASP ZAP full scan against the running app with optional authenticated coverage. | SQLi, XSS, auth flaws, insecure headers |
 | SCAScan (Trivy SBOM) | Static | Trivy image scan producing SBOM (CycloneDX JSON) and high/critical CVE summary. | Dependency CVEs in container image |
 
@@ -26,9 +26,9 @@ automatically; each demo is interactive and must be started by you.
 
 - The vulnerable ASP.NET Core app (AspGoat base).
 - GitHub Actions workflows for security testing.
-- SAST + SCA (Snyk Code + Snyk Open Source) as the first pipeline in the series.
+- SAST + source dependency SCA (Snyk Code + Snyk Open Source) as the first pipeline in the series.
 - DAST (OWASP ZAP Full Scan) as the follow-up pipeline in the series.
-- SCAScan (Trivy SBOM) for container image dependency coverage.
+- SCAScan (Trivy SBOM) for container image + OS package dependency coverage.
 - Detailed runbook: [docs/sast.md](docs/sast.md).
 - DAST runbook: [docs/dast.md](docs/dast.md).
 - SCA runbook: [docs/sca-scan.md](docs/sca-scan.md).
@@ -37,9 +37,10 @@ automatically; each demo is interactive and must be started by you.
 ## SAST (Snyk Code) workflow
 
 The SAST workflow is **manual-only** so it never runs without you triggering it.
-It runs **Snyk Code (SAST)** and **Snyk Open Source (SCA)**, generating separate
-SARIF + JSON outputs. Whether the scans pass or fail, the SARIF is uploaded to
-the repo so results are visible in Code Scanning and downloadable as artifacts.
+It runs **Snyk Code (SAST)** plus **Snyk Open Source (SCA)** for source dependency
+analysis (manifests and transitive packages), generating separate SARIF + JSON
+outputs. Whether the scans pass or fail, the SARIF is uploaded to the repo so
+results are visible in Code Scanning and downloadable as artifacts.
 
 How to run:
 1. Go to **Actions** → **SAST (Snyk Code)** → **Run workflow**.
@@ -116,9 +117,10 @@ These files live under `.zap/` and are referenced by the DAST workflow:
 
 ## SCAScan (Trivy SBOM) workflow
 
-The SCA workflow is **manual-only** and scans the built Docker image with Trivy.
-It generates a CycloneDX SBOM and a HIGH/CRITICAL summary, then fails the job
-if the threshold is met.
+The SCAScan workflow is **manual-only** and scans the built Docker image with Trivy.
+It captures OS packages and bundled runtime dependencies that may not appear in
+source manifests, generates a CycloneDX SBOM and a HIGH/CRITICAL summary, then
+fails the job if the threshold is met.
 
 How to run:
 1. Go to **Actions** → **SCAScan** → **Run workflow**.
