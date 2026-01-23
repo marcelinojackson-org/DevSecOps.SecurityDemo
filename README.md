@@ -12,7 +12,7 @@ automatically; each demo is interactive and must be started by you.
 
 | Pipeline | Type | What it does | Sample vulnerabilities |
 | --- | --- | --- | --- |
-| SAST (this repo) | Static | Snyk Code (SAST) + Snyk Open Source (SCA), uploads SARIF to GitHub Code Scanning. | SQLi, XSS, SSRF, insecure deserialization, dependency CVEs |
+| SAST (Snyk Code) | Static | Snyk Code (SAST) + Snyk Open Source (SCA), uploads SARIF to GitHub Code Scanning. | SQLi, XSS, SSRF, insecure deserialization, dependency CVEs |
 | DAST (ZAP Full Scan) | Dynamic | OWASP ZAP full scan against the running app with optional authenticated coverage. | SQLi, XSS, auth flaws, insecure headers |
 | SCAScan (Trivy SBOM) | Static | Trivy image scan producing SBOM (CycloneDX JSON) and high/critical CVE summary. | Dependency CVEs in container image |
 
@@ -131,6 +131,16 @@ How to run:
 Notes:
 - Trivy honors `.trivyignore` when present for demo suppressions.
 - SBOM format is CycloneDX JSON (`reports/trivy-sbom.json`).
+
+SCAScan report samples (click to open):
+- [SCAScan (Trivy SBOM)](docs/sca-reports/20260123-023719/trivy-sbom.json)
+- [SCAScan critical summary](docs/sca-reports/20260123-023719/trivy-critical.txt)
+
+### SCAScan screenshot
+
+**Workflow inputs**
+
+![SCAScan workflow inputs](screenshots/sca-workflow-params.png)
 
 ## Repo details
 
