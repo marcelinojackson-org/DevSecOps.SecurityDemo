@@ -29,6 +29,7 @@ automatically; each demo is interactive and must be started by you.
 - DAST (OWASP ZAP Full Scan) as the follow-up pipeline in the series.
 - Detailed runbook: [docs/sast.md](docs/sast.md).
 - DAST runbook: [docs/dast.md](docs/dast.md).
+- DAST tuning: `.zap/rules.tsv` uses ZAP alert IDs (reference: https://www.zaproxy.org/docs/alerts/).
 
 ## SAST (Snyk Code) workflow
 
@@ -57,6 +58,31 @@ How to run:
 ### Screenshot
 
 ![SAST code scanning](screenshots/sast-code-scanning.png)
+
+## DAST (ZAP Full Scan) workflow
+
+The DAST workflow is **manual-only** and runs OWASP ZAP against a running
+container of the app. It always uploads HTML/JSON reports and keeps the job
+non-blocking for demos.
+
+How to run:
+1. Go to **Actions** → **DAST (ZAP Full Scan)** → **Run workflow**.
+2. Choose the inputs:
+   - `fail-threshold` (high/critical; critical maps to high for ZAP)
+   - `include-llm` (true/false)
+   - `spider-depth` (default: 2)
+   - `target-url` (default: http://localhost:8000)
+3. Download artifacts after the run:
+   - `zap-dast-YYYYMMDD-HHMMSS` (HTML + JSON)
+
+Notes:
+- The workflow logs in with `admin/admin123` to capture an auth cookie so the
+  spider/scan can reach authenticated routes.
+- If `include-llm=true`, the workflow checks Ollama at `http://localhost:11434`
+  and toggles `enableLlmLabs` accordingly.
+- Spider depth is controlled by `.zap/hooks/spider.py`.
+- Alert tuning lives in `.zap/rules.tsv` and uses ZAP alert IDs:
+  https://www.zaproxy.org/docs/alerts/
 
 ## Repo details
 

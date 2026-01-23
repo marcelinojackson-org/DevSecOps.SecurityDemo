@@ -4,3 +4,5 @@
 #
 # Example:
 # 10095	IGNORE	Ignore "Cookie No HttpOnly Flag" for demo
+13211	IGNORE	Ignore Cross Site Scripting (script-based)
+10055	WARN	Warn on Missing Anti-clickjacking Header
