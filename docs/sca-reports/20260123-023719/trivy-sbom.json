@@ -5,7 +5,7 @@
   "serialNumber": "urn:uuid:cf714ac8-d8bb-44de-ac89-6a585879294c",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-01-23T02:37:51+00:00",
+    "timestamp": "REPORT_DATE",
     "tools": {
       "components": [
         {
@@ -8326,8 +8326,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2005-2541"
         }
       ],
-      "published": "2005-08-10T04:00:00+00:00",
-      "updated": "2025-04-03T01:03:51+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/tar@1.34%2Bdfsg-1.2%2Bdeb12u1?arch=amd64&distro=debian-12.13",
@@ -8390,8 +8390,8 @@
           "url": "https://issues.rpath.com/browse/RPL-1825"
         }
       ],
-      "published": "2007-10-28T17:08:00+00:00",
-      "updated": "2025-04-09T00:30:58+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/login@4.13%2Bdfsg1-1%2Bdeb12u2?arch=amd64&distro=debian-12.13&epoch=1",
@@ -8481,8 +8481,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2010-4756"
         }
       ],
-      "published": "2011-03-02T20:00:01+00:00",
-      "updated": "2025-11-03T22:15:41+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libc-bin@2.36-9%2Bdeb12u13?arch=amd64&distro=debian-12.13",
@@ -8566,8 +8566,8 @@
           "url": "https://ubuntu.com/security/CVE-2011-3374"
         }
       ],
-      "published": "2019-11-26T00:15:11+00:00",
-      "updated": "2024-11-21T01:30:22+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/apt@2.6.1?arch=amd64&distro=debian-12.13",
@@ -8936,8 +8936,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2011-3389"
         }
       ],
-      "published": "2011-09-06T19:55:03+00:00",
-      "updated": "2025-04-11T00:51:21+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libgnutls30@3.7.9-2%2Bdeb12u5?arch=amd64&distro=debian-12.13",
@@ -9024,8 +9024,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2011-4116"
         }
       ],
-      "published": "2020-01-31T18:15:11+00:00",
-      "updated": "2025-08-04T19:04:38+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/perl-base@5.36.0-7%2Bdeb12u3?arch=amd64&distro=debian-12.13",
@@ -9097,8 +9097,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2013-4392"
         }
       ],
-      "published": "2013-10-28T22:55:03+00:00",
-      "updated": "2025-06-09T16:15:23+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libsystemd0@252.39-1~deb12u1?arch=amd64&distro=debian-12.13",
@@ -9224,8 +9224,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2016-2781"
         }
       ],
-      "published": "2017-02-07T15:59:00+00:00",
-      "updated": "2025-06-09T16:15:25+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/coreutils@9.1-1?arch=amd64&distro=debian-12.13",
@@ -9300,8 +9300,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2017-18018"
         }
       ],
-      "published": "2018-01-04T04:29:00+00:00",
-      "updated": "2025-06-09T16:15:27+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/coreutils@9.1-1?arch=amd64&distro=debian-12.13",
@@ -9394,8 +9394,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2018-20796"
         }
       ],
-      "published": "2019-02-26T02:29:00+00:00",
-      "updated": "2024-11-21T04:02:11+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libc-bin@2.36-9%2Bdeb12u13?arch=amd64&distro=debian-12.13",
@@ -9488,8 +9488,8 @@
           "url": "https://www.oracle.com/security-alerts/cpujan2020.html"
         }
       ],
-      "published": "2018-02-07T23:29:01+00:00",
-      "updated": "2024-11-21T04:11:15+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libgcrypt20@1.10.1-3?arch=amd64&distro=debian-12.13",
@@ -9564,8 +9564,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2019-1010022"
         }
       ],
-      "published": "2019-07-15T04:15:13+00:00",
-      "updated": "2024-11-21T04:17:55+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libc-bin@2.36-9%2Bdeb12u13?arch=amd64&distro=debian-12.13",
@@ -9658,8 +9658,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2019-1010023"
         }
       ],
-      "published": "2019-07-15T04:15:13+00:00",
-      "updated": "2024-11-21T04:17:55+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libc-bin@2.36-9%2Bdeb12u13?arch=amd64&distro=debian-12.13",
@@ -9758,8 +9758,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2019-1010024"
         }
       ],
-      "published": "2019-07-15T04:15:13+00:00",
-      "updated": "2024-11-21T04:17:55+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libc-bin@2.36-9%2Bdeb12u13?arch=amd64&distro=debian-12.13",
@@ -9855,8 +9855,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2019-1010025"
         }
       ],
-      "published": "2019-07-15T04:15:13+00:00",
-      "updated": "2024-11-21T04:17:55+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libc-bin@2.36-9%2Bdeb12u13?arch=amd64&distro=debian-12.13",
@@ -9949,8 +9949,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2019-9192"
         }
       ],
-      "published": "2019-02-26T18:29:00+00:00",
-      "updated": "2024-11-21T04:51:10+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libc-bin@2.36-9%2Bdeb12u13?arch=amd64&distro=debian-12.13",
@@ -10064,8 +10064,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2022-0563"
         }
       ],
-      "published": "2022-02-21T19:15:08+00:00",
-      "updated": "2025-06-09T16:15:33+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/bsdutils@2.38.1-5%2Bdeb12u3?arch=amd64&distro=debian-12.13&epoch=1",
@@ -10233,8 +10233,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2022-27943"
         }
       ],
-      "published": "2022-03-26T13:15:07+00:00",
-      "updated": "2024-11-21T06:56:31+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/gcc-12-base@12.2.0-14%2Bdeb12u1?arch=amd64&distro=debian-12.13",
@@ -10336,8 +10336,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2022-3219"
         }
       ],
-      "published": "2023-02-23T20:15:12+00:00",
-      "updated": "2025-03-12T21:15:38+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/gpgv@2.2.40-1.1%2Bdeb12u2?arch=amd64&distro=debian-12.13",
@@ -10391,8 +10391,8 @@
           "url": "https://github.com/systemd/systemd/releases"
         }
       ],
-      "published": "2023-06-13T17:15:14+00:00",
-      "updated": "2025-01-03T20:15:26+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libsystemd0@252.39-1~deb12u1?arch=amd64&distro=debian-12.13",
@@ -10458,8 +10458,8 @@
           "url": "https://github.com/systemd/systemd/releases"
         }
       ],
-      "published": "2023-06-13T17:15:14+00:00",
-      "updated": "2024-11-21T08:01:51+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libsystemd0@252.39-1~deb12u1?arch=amd64&distro=debian-12.13",
@@ -10531,8 +10531,8 @@
           "url": "https://github.com/systemd/systemd/releases"
         }
       ],
-      "published": "2023-06-13T17:15:14+00:00",
-      "updated": "2024-11-21T08:01:52+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libsystemd0@252.39-1~deb12u1?arch=amd64&distro=debian-12.13",
@@ -10682,8 +10682,8 @@
           "url": "https://www.reddit.com/r/perl/comments/111tadi/psa_httptiny_disabled_ssl_verification_by_default/"
         }
       ],
-      "published": "2023-04-29T00:15:09+00:00",
-      "updated": "2025-01-30T20:15:32+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/perl-base@5.36.0-7%2Bdeb12u3?arch=amd64&distro=debian-12.13",
@@ -10827,8 +10827,8 @@
           "url": "https://www.winimage.com/zLibDll/minizip.html"
         }
       ],
-      "published": "2023-10-14T02:15:09+00:00",
-      "updated": "2024-12-20T17:41:31+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/zlib1g@1.2.13.dfsg-1?arch=amd64&distro=debian-12.13&epoch=1",
@@ -10918,8 +10918,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2023-50495"
         }
       ],
-      "published": "2023-12-12T15:15:07+00:00",
-      "updated": "2025-11-04T19:16:14+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libtinfo6@6.4-4?arch=amd64&distro=debian-12.13",
@@ -11057,8 +11057,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2024-10041"
         }
       ],
-      "published": "2024-10-23T14:15:03+00:00",
-      "updated": "2024-12-18T10:15:05+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libpam-modules-bin@1.5.2-6%2Bdeb12u2?arch=amd64&distro=debian-12.13",
@@ -11214,8 +11214,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2024-2236"
         }
       ],
-      "published": "2024-03-06T22:15:57+00:00",
-      "updated": "2025-04-02T17:15:37+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libgcrypt20@1.10.1-3?arch=amd64&distro=debian-12.13",
@@ -11326,8 +11326,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2024-56433"
         }
       ],
-      "published": "2024-12-26T09:15:07+00:00",
-      "updated": "2024-12-26T09:15:07+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/login@4.13%2Bdfsg1-1%2Bdeb12u2?arch=amd64&distro=debian-12.13&epoch=1",
@@ -11402,8 +11402,8 @@
           "url": "https://www.kb.cert.org/vuls/id/271649"
         }
       ],
-      "published": "2026-01-07T22:15:43+00:00",
-      "updated": "2026-01-20T18:16:01+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libtasn1-6@4.19.0-2%2Bdeb12u1?arch=amd64&distro=debian-12.13",
@@ -11466,8 +11466,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2025-14104"
         }
       ],
-      "published": "2025-12-05T17:16:03+00:00",
-      "updated": "2025-12-08T18:26:49+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/bsdutils@2.38.1-5%2Bdeb12u3?arch=amd64&distro=debian-12.13&epoch=1",
@@ -11584,8 +11584,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2025-15281"
         }
       ],
-      "published": "2026-01-20T14:16:07+00:00",
-      "updated": "2026-01-20T18:16:01+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libc-bin@2.36-9%2Bdeb12u13?arch=amd64&distro=debian-12.13",
@@ -11636,8 +11636,8 @@
           "url": "https://minerva.crocs.fi.muni.cz"
         }
       ],
-      "published": "2025-06-16T22:15:44+00:00",
-      "updated": "2025-06-26T17:15:30+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libssl3@3.0.18-1~deb12u1?arch=amd64&distro=debian-12.13",
@@ -11730,8 +11730,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2025-30258"
         }
       ],
-      "published": "2025-03-19T20:15:20+00:00",
-      "updated": "2025-10-16T16:53:07+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/gpgv@2.2.40-1.1%2Bdeb12u2?arch=amd64&distro=debian-12.13",
@@ -11818,8 +11818,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2025-5278"
         }
       ],
-      "published": "2025-05-27T21:15:23+00:00",
-      "updated": "2025-10-22T20:15:37+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/coreutils@9.1-1?arch=amd64&distro=debian-12.13",
@@ -11898,8 +11898,8 @@
           "url": "https://www.gnu.org/"
         }
       ],
-      "published": "2025-06-16T22:16:41+00:00",
-      "updated": "2025-06-17T20:50:23+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libtinfo6@6.4-4?arch=amd64&distro=debian-12.13",
@@ -11963,8 +11963,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2025-6297"
         }
       ],
-      "published": "2025-07-01T17:15:30+00:00",
-      "updated": "2025-08-19T17:50:38+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/dpkg@1.21.22?arch=amd64&distro=debian-12.13",
@@ -12042,8 +12042,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2025-68972"
         }
       ],
-      "published": "2025-12-27T23:15:40+00:00",
-      "updated": "2026-01-09T20:08:47+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/gpgv@2.2.40-1.1%2Bdeb12u2?arch=amd64&distro=debian-12.13",
@@ -12130,8 +12130,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2026-0861"
         }
       ],
-      "published": "2026-01-14T21:15:52+00:00",
-      "updated": "2026-01-16T18:16:09+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libc-bin@2.36-9%2Bdeb12u13?arch=amd64&distro=debian-12.13",
@@ -12194,8 +12194,8 @@
           "url": "https://www.cve.org/CVERecord?id=CVE-2026-0915"
         }
       ],
-      "published": "2026-01-15T22:16:12+00:00",
-      "updated": "2026-01-20T16:16:07+00:00",
+      "published": "REPORT_DATE",
+      "updated": "REPORT_DATE",
       "affects": [
         {
           "ref": "pkg:deb/debian/libc-bin@2.36-9%2Bdeb12u13?arch=amd64&distro=debian-12.13",
