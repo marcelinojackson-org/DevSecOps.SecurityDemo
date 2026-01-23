@@ -19,6 +19,11 @@ on:
         options:
           - "false"
           - "true"
+      spider-depth:
+        description: "Spider max depth (level 2 = 2, 0 = unlimited)"
+        required: true
+        default: "2"
+        type: string
       target-url:
         description: "Target URL"
         required: true
@@ -104,6 +109,7 @@ jobs:
         uses: zaproxy/action-full-scan@v0.13.0
         env:
           NODE_OPTIONS: "--no-deprecation"
+          SPIDER_MAX_DEPTH: ${{ inputs.spider-depth }}
           ZAP_AUTH_HEADER: Cookie
           ZAP_AUTH_HEADER_VALUE: ${{ steps.auth.outputs.cookie }}
           ZAP_AUTH_HEADER_SITE: ${{ inputs.target-url }}
@@ -111,7 +117,7 @@ jobs:
           target: ${{ inputs.target-url }}
           docker_name: "ghcr.io/zaproxy/zaproxy:stable"
           rules_file_name: ".zap/rules.tsv"
-          cmd_options: "-j"
+          cmd_options: "-j --hook=/zap/wrk/.zap/hooks/spider.py"
           fail_action: false
 
       - name: Normalize reports
@@ -143,6 +149,7 @@ jobs:
             echo "- LLM requested: ${{ inputs.include-llm }}"
             echo "- LLM enabled: ${{ steps.llm.outputs.enabled }} (${{ steps.llm.outputs.reason }})"
             echo "- Threshold: ${{ inputs.fail-threshold }}"
+            echo "- Spider depth: ${{ inputs.spider-depth }}"
             echo "- Non-blocking: true"
             echo "- ZAP status: ${{ steps.zap.outcome }}"
             echo "- Reports: reports/zap-report.html, reports/zap-report.json"
