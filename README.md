@@ -1,5 +1,7 @@
 # DevSecOps Security Demo
 
+[![Medium Article](https://img.shields.io/badge/Medium-Read_Article-12100E?style=flat-square&logo=medium&logoColor=white)](https://medium.com/@mjmarc.common/shift-left-in-practice-sast-dast-and-sca-with-github-actions-cb5539f31d04)
+
 This repo is a hands-on security testing demo built on a deliberately vulnerable
 ASP.NET Core application. It is copied/forked from **AspGoat**
 (https://github.com/Soham7-dev/AspGoat) and repurposed to showcase DevSecOps
