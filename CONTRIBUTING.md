@@ -45,3 +45,6 @@ We welcome all contributions — from bug reports and code improvements to new l
 7. **Recognition**
 
    **All contributors will be credited in the Contributors section 🥳**
+## License of contributions
+
+By contributing, you agree that your contributions are licensed under the Apache License 2.0 for this repository.
